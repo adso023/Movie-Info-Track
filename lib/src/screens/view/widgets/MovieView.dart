@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:movie_track/src/screens/search/Search.dart';
+import 'package:movie_track/src/screens/search/SearchView.dart';
 import 'package:movie_track/src/screens/view/Discover.dart';
 
 class MovieView extends StatefulWidget {
@@ -53,6 +55,7 @@ class _MovieView extends State<MovieView> {
                   onChanged: (str) {
                     setState(() {
                       _selectedPath = str;
+                      _currPage = 1;
                     });
                   },
                   underline: Container(),
@@ -61,7 +64,9 @@ class _MovieView extends State<MovieView> {
                 ),
                 FlatButton(
                   child: Icon(Icons.search, color: Colors.white,),
-                  onPressed: null,
+                  onPressed: () => Navigator.push(context, MaterialPageRoute(
+                    builder: (context) => SearchView(),
+                  )),
                 )
               ],
             ),
@@ -72,8 +77,8 @@ class _MovieView extends State<MovieView> {
           left: 0,
           right: 0,
           bottom: 45,
-          child: FutureBuilder<DiscoverMovie>(
-            future: DiscoverMovie.getDiscoverMovie(_selectedPath, _currPage),
+          child: FutureBuilder<Discover>(
+            future: Discover.getDiscoverMovie(_selectedPath, _currPage),
             builder: (context, data) {
               if(data.hasData && data.data.success) {
                 return SizedBox(
@@ -83,7 +88,7 @@ class _MovieView extends State<MovieView> {
                     childAspectRatio: 0.56,
                     padding: EdgeInsets.only(left: 2.0, right: 2.0),
                     physics: BouncingScrollPhysics(),
-                    children: data.data.results.map<Widget>((e) {
+                    children: data.data.movieResults.map<Widget>((e) {
                       return Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -95,6 +100,9 @@ class _MovieView extends State<MovieView> {
                               child: CircularProgressIndicator(
                                 value: progress.progress,
                               ),
+                            ),
+                            errorWidget: (context, str, _) => Container(
+                              child: Icon(Icons.tv),
                             ),
                           ),
                           Text(e.title, overflow: TextOverflow.ellipsis, style: TextStyle(
