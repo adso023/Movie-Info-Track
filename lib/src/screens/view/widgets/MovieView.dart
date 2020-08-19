@@ -73,7 +73,7 @@ class _MovieView extends State<MovieView> {
           right: 0,
           bottom: 45,
           child: FutureBuilder<DiscoverMovie>(
-            future: DiscoverMovie.getDiscoverMovie(_selectedPath, 1),
+            future: DiscoverMovie.getDiscoverMovie(_selectedPath, _currPage),
             builder: (context, data) {
               if(data.hasData && data.data.success) {
                 return SizedBox(
@@ -139,12 +139,12 @@ class _MovieView extends State<MovieView> {
               children: [
                 GestureDetector(
                   child: Icon(Icons.arrow_back, color: Colors.white,),
-                  onTap: (){},
+                  onTap: _currPage == 1 ? null : () => setState(() { _currPage -= 1; }),
                 ),
-                Text('1/1000', style: TextStyle(color: Colors.white),),
+                Text('$_currPage / 1000', style: TextStyle(color: Colors.white),),
                 GestureDetector(
                   child: Icon(Icons.arrow_forward, color: Colors.white,),
-                  onTap: (){},
+                  onTap: _currPage == 1000 ? null : () => setState(() { _currPage += 1; }),
                 )
               ],
             ),

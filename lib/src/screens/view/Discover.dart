@@ -1,66 +1,127 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-class DiscoverMovie {
+import 'package:movie_track/src/screens/view/widgets/TvView.dart';
+class Discover {
   int page;
-  List<Movie> results;
+  List<Movie> movieResults;
+  List<TV> tvResults;
   int totalResults;
   int totalPages;
   String statusMessage;
   bool success;
   int statusCode;
 
-  static Map<String, String> paths = {
+  static Map<String, String> moviePaths = {
     "Popular" : "/movie/popular",
     "Top Rated" : "/movie/top_rated",
     "UpComing" : "/movie/upcoming",
     "Now Playing" : "/movie/now_playing"
   };
 
-  DiscoverMovie({this.page, this.results, this.totalResults, this.totalPages, this.statusCode, this.statusMessage, this.success});
+  static Map<String, String> tvPaths = {
+    "Popular" : "/tv/popular",
+    "Top Rated" : "/tv/top_rated",
+    "On the air" : "/tv/on_the_air",
+    "Airing Today" : "/tv/airing_today"
+  };
 
-  factory DiscoverMovie.fromResponse(Map<String, dynamic> response) {
-    return DiscoverMovie(
+  Discover({this.page, this.movieResults, this.tvResults, this.totalResults, this.totalPages, this.statusCode, this.statusMessage, this.success});
+
+  factory Discover.forMovie(Map<String, dynamic> response) {
+    return Discover(
       page: int.parse( response['page'].toString()) ?? -1,
       totalPages: int.parse(response['total_pages'].toString()) ?? -1,
       totalResults: int.parse(response['total_results'].toString()) ?? -1,
       success: true,
-      results: response['results'].map<Movie>((e) => Movie.fromMap(e)).toList() ?? [],
+      movieResults: response['results'].map<Movie>((e) => Movie.fromMap(e)).toList() ?? [],
+      tvResults: [],
     );
   }
 
-  factory DiscoverMovie.fromError(Map<String, dynamic> response) {
-    return DiscoverMovie(
+  factory Discover.forTV(Map<String, dynamic> response) {
+    return Discover(
+      page: int.parse(response['page'].toString()) ?? -1,
+      totalResults: int.parse(response['total_results'].toString()) ?? -1,
+      totalPages: int.parse(response['total_pages'].toString()) ?? -1,
+      success: true,
+      movieResults: [],
+      tvResults: response['results'].map<TV>((e) => TV.fromMap(e)).toList() ?? [],
+    );
+  }
+
+  factory Discover.fromError(Map<String, dynamic> response) {
+    return Discover(
       success: response['success'] ?? false,
       statusCode: int.parse(response['status_code'].toString()),
       statusMessage: response['status_message']
     );
   }
 
-  static Future<DiscoverMovie> getDiscoverMovie(String type, int page) async{
-    String path = paths[type];
+  static Future<Discover> getDiscoverTV(String type, int page) async {
+    String path = tvPaths[type];
+    print(path);
+    http.Response res = await http.get("https://api.themoviedb.org/3$path?api_key=1eddbb452a6eaaf51e05d89cf99d3ebe&language=en-US&page=$page");
+    print(json.decode(res.body));
+    if(res.statusCode == 200) {
+      Discover discoverTV = Discover.forTV(jsonDecode(res.body));
+      return discoverTV;
+    } else {
+      Discover discoverTV = Discover.fromError(jsonDecode(res.body));
+      return discoverTV;
+    }
+  }
+
+  static Future<Discover> getDiscoverMovie(String type, int page) async{
+    String path = moviePaths[type];
     print(path);
     http.Response res = await http.get('https://api.themoviedb.org/3$path?api_key=1eddbb452a6eaaf51e05d89cf99d3ebe&language=en-US&page=$page');
     if(res.statusCode == 200) {
-      DiscoverMovie discoverMovie = DiscoverMovie.fromResponse(jsonDecode(res.body));
+      Discover discoverMovie = Discover.forMovie(jsonDecode(res.body));
       return discoverMovie;
     } else {
-      DiscoverMovie discoverMovie = DiscoverMovie.fromError(jsonDecode(res.body));
+      Discover discoverMovie = Discover.fromError(jsonDecode(res.body));
       return discoverMovie;
     }
   }
 }
 
-class DiscoverTV {
-  static Map<String, String> paths = {
-    "Popular" : "/tv/popular",
-    "Top Rated" : "/tv/top_rated",
-    "On the air" : "/tv/on_the_air",
-    "Airing Today" : "/tv/airing_today"
-  };
-}
+class TV {
+  String posterPath;
+  double popularity;
+  int id;
+  String backdropPath;
+  double voteAverage;
+  String overview;
+  String firstAirDate;
+  List<String> originCountry;
+  List<int> genreIds;
+  String originalLanguage;
+  int voteCount;
+  String name;
+  String originalName;
 
-class TV {}
+  TV({this.posterPath, this.voteCount, this.voteAverage, this.popularity, this.overview, this.originalLanguage, this.id, this.genreIds, this.backdropPath, this.name, this.firstAirDate, this.originalName, this.originCountry});
+
+  factory TV.fromMap(Map<String, dynamic> json) {
+    return TV(
+      posterPath: json['poster_path'] ?? null,
+      popularity: double.parse(json['popularity'].toString()),
+      id: int.parse(json['id'].toString()),
+      backdropPath: json['backdrop_path'].toString() ?? null,
+      voteAverage: double.parse(json['vote_average'].toString()),
+      overview: json['overview'].toString(),
+      firstAirDate: json['first_air_date'].toString(),
+      originCountry: json['origin_country'].map<String>((e) => e.toString()).toList(),
+      genreIds: json['genre_ids'].map<int>((e) => int.parse(e.toString())).toList(),
+      originalLanguage: json['original_language'].toString(),
+      voteCount: int.parse(json['vote_count'].toString()),
+      name: json['name'].toString(),
+      originalName: json['original_name'].toString(),
+    );
+  }
+}
 
 class Movie {
   String posterPath;
