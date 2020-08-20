@@ -34,7 +34,7 @@ class _MovieView extends State<MovieView> {
           left: 0,
           right: 0,
           child: Container(
-            color: Colors.black87,
+            color: Colors.black12,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
