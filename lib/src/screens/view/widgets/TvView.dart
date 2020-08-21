@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:movie_track/src/screens/search/SearchView.dart';
-import 'package:movie_track/src/screens/view/Discover.dart';
+import 'file:///D:/AndroidProjects/movie_track/lib/src/models/Discover.dart';
 
 class TvView extends StatefulWidget {
   createState() => _TvView();
@@ -11,6 +11,7 @@ class _TvView extends State<TvView> {
   List<String> types = ["Popular", "Top Rated", "On the air", "Airing Today"];
   String _selectedPath;
   int _currPage;
+  ScrollController _controller;
 
   @override
   void initState() {
@@ -18,6 +19,7 @@ class _TvView extends State<TvView> {
     super.initState();
     _selectedPath = types[0];
     _currPage = 1;
+    _controller = ScrollController();
   }
 
   @override
@@ -86,6 +88,7 @@ class _TvView extends State<TvView> {
                     child: GridView.count(
                       crossAxisCount: 3,
                       childAspectRatio: 0.56,
+                      controller: _controller,
                       padding: EdgeInsets.only(left: 2.0, right: 2.0),
                       physics: BouncingScrollPhysics(),
                       children: data.data.tvResults.map((e) {

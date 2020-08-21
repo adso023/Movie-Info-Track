@@ -1,9 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:movie_track/src/screens/search/Search.dart';
 import 'package:movie_track/src/screens/search/SearchView.dart';
-import 'package:movie_track/src/screens/view/Discover.dart';
+import 'file:///D:/AndroidProjects/movie_track/lib/src/models/Discover.dart';
 
 class MovieView extends StatefulWidget {
   createState() => _MovieView();
@@ -13,6 +11,7 @@ class _MovieView extends State<MovieView> {
   String _selectedPath;
   List<String> types = ["Popular", "Top Rated", "UpComing", "Now Playing"];
   int _currPage;
+  ScrollController _controller;
 
   @override
   void initState() {
@@ -20,7 +19,10 @@ class _MovieView extends State<MovieView> {
     super.initState();
     _selectedPath = 'Popular';
     _currPage = 1;
+    _controller = ScrollController();
   }
+
+  void toTop() => _controller.jumpTo(0);
 
   @override
   Widget build(BuildContext context) {
@@ -57,6 +59,7 @@ class _MovieView extends State<MovieView> {
                       _selectedPath = str;
                       _currPage = 1;
                     });
+                    toTop();
                   },
                   underline: Container(),
                   dropdownColor: Colors.black87,
@@ -86,6 +89,7 @@ class _MovieView extends State<MovieView> {
                   child: GridView.count(
                     crossAxisCount: 3,
                     childAspectRatio: 0.56,
+                    controller: _controller,
                     padding: EdgeInsets.only(left: 2.0, right: 2.0),
                     physics: BouncingScrollPhysics(),
                     children: data.data.movieResults.map<Widget>((e) {
@@ -147,12 +151,12 @@ class _MovieView extends State<MovieView> {
               children: [
                 GestureDetector(
                   child: Icon(Icons.arrow_back, color: Colors.white,),
-                  onTap: _currPage == 1 ? null : () => setState(() { _currPage -= 1; }),
+                  onTap: _currPage == 1 ? null : () => setState(() { _currPage -= 1; toTop();}),
                 ),
                 Text('$_currPage / 1000', style: TextStyle(color: Colors.white),),
                 GestureDetector(
                   child: Icon(Icons.arrow_forward, color: Colors.white,),
-                  onTap: _currPage == 1000 ? null : () => setState(() { _currPage += 1; }),
+                  onTap: _currPage == 1000 ? null : () => setState(() { _currPage += 1; toTop();}),
                 )
               ],
             ),
