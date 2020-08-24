@@ -1,7 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:movie_track/src/models/simplified/Discover.dart';
 import 'package:movie_track/src/screens/search/SearchView.dart';
-import 'file:///D:/AndroidProjects/movie_track/lib/src/models/Discover.dart';
 
 class MovieView extends StatefulWidget {
   createState() => _MovieView();

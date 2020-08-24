@@ -8,11 +8,12 @@ class MainView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TabbedMainView(
-      titles: ["Movies", "Tv"],
-      views: [
-        MovieView(),
-        TvView(),
-      ],
-    );
+        titles: ["Movies", "Tv", "Watch Later"],
+        views: [
+          MovieView(),
+          TvView(),
+          Container(),
+        ],
+      );
   }
 }

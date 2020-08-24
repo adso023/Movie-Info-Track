@@ -10,7 +10,7 @@ class TabbedMainView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-      length: 2,
+      length: 3,
       child: Scaffold(
         appBar: PreferredSize(
           child: Container(
@@ -23,7 +23,7 @@ class TabbedMainView extends StatelessWidget {
               labelColor: Colors.white,
               unselectedLabelColor: Colors.white24,
               labelStyle: TextStyle(
-                fontSize: 18, fontWeight: FontWeight.w500
+                fontSize: 16, fontWeight: FontWeight.w600
               ),
               indicator: UnderlineTabIndicator(
                 insets: EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),

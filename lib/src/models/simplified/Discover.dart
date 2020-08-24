@@ -1,8 +1,7 @@
 import 'dart:convert';
-
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'package:movie_track/src/screens/view/widgets/TvView.dart';
+import 'package:movie_track/src/models/simplified/Movie.dart';
+import 'file:///D:/AndroidProjects/movie_track/lib/src/models/simplified/Tv.dart';
 class Discover {
   int page;
   List<Movie> movieResults;
@@ -84,78 +83,5 @@ class Discover {
       Discover discoverMovie = Discover.fromError(jsonDecode(res.body));
       return discoverMovie;
     }
-  }
-}
-
-class TV {
-  String posterPath;
-  double popularity;
-  int id;
-  String backdropPath;
-  double voteAverage;
-  String overview;
-  String firstAirDate;
-  List<String> originCountry;
-  List<int> genreIds;
-  String originalLanguage;
-  int voteCount;
-  String name;
-  String originalName;
-
-  TV({this.posterPath, this.voteCount, this.voteAverage, this.popularity, this.overview, this.originalLanguage, this.id, this.genreIds, this.backdropPath, this.name, this.firstAirDate, this.originalName, this.originCountry});
-
-  factory TV.fromMap(Map<String, dynamic> json) {
-    return TV(
-      posterPath: json['poster_path'] ?? null,
-      popularity: double.parse(json['popularity'].toString()),
-      id: int.parse(json['id'].toString()),
-      backdropPath: json['backdrop_path'].toString() ?? null,
-      voteAverage: double.parse(json['vote_average'].toString()),
-      overview: json['overview'].toString(),
-      firstAirDate: json['first_air_date'].toString(),
-      originCountry: json['origin_country'].map<String>((e) => e.toString()).toList(),
-      genreIds: json['genre_ids'].map<int>((e) => int.parse(e.toString())).toList(),
-      originalLanguage: json['original_language'].toString(),
-      voteCount: int.parse(json['vote_count'].toString()),
-      name: json['name'].toString(),
-      originalName: json['original_name'].toString(),
-    );
-  }
-}
-
-class Movie {
-  String posterPath;
-  bool adult;
-  String overview;
-  String releaseDate;
-  List<int> genreIds;
-  int id;
-  String originalTitle;
-  String originalLanguage;
-  String title;
-  String backdropPath;
-  double popularity;
-  int voteCount;
-  bool video;
-  double voteAverage;
-
-  Movie({this.adult, this.backdropPath, this.genreIds, this.id, this.originalLanguage, this.originalTitle, this.overview, this.popularity, this.posterPath, this.releaseDate, this.title, this.voteAverage, this.video, this.voteCount});
-
-  factory Movie.fromMap(Map<String, dynamic> json) {
-    return Movie(
-      posterPath: json['poster_path'].toString() ?? null,
-      adult: json['adult'],
-      overview: json['overview'].toString() ?? null,
-      releaseDate: json['release_date'].toString(),
-      genreIds: json['genre_ids'].map<int>((e) => int.parse(e.toString())).toList(),
-      originalTitle: json['original_title'].toString(),
-      originalLanguage: json['original_language'].toString(),
-      title: json['title'].toString(),
-      backdropPath: json['backdrop_path'].toString() ?? null,
-      popularity: double.parse(json['popularity'].toString()),
-      voteCount: int.parse(json['vote_count'].toString()),
-      video: json['video'],
-      voteAverage: double.parse(json['vote_average'].toString()),
-    );
   }
 }
